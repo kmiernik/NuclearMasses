@@ -1,32 +1,38 @@
 """
     parseame20(amefile)
 
-    Parse AME2020 masses file and return dictionary (A, Z) => (Δ, experimental)
-    where Δ is mass defect, and experimental flag is true for real experimental
-    data, and false for extrapolated values
+    Parse AME2020 masses file and return NamedTuple
+    (Z, A, delta, experimental, uncertainty) 
+    where experimental flag is true for real experimental data, and false for
+    extrapolated values
 """
 function parseame20(amefile)
     skipto = 37
     iline = 0
-    data = Dict{Tuple{Int64, Int64}, NamedTuple{(:value, :ex), Tuple{Float64, Bool}}}()
+    Zs = Int64[]
+    As = Int64[]
+    ds = Float64[]
+    us = Float64[]
+    exps = Bool[]
     for line in readlines(amefile)
         iline += 1
         if iline < skipto
             continue
         end
-        Z = parse(Int64, line[10:14])
-        A = parse(Int64, line[15:19])
         d = line[29:42]
         experimental = true
         if occursin("#", d)
             experimental = false
             d = replace(d, "#" => "")
         end
-        data[(A, Z)] = (value=parse(Float64, d), ex=experimental)
+        push!(Zs, parse(Int64, line[10:14]))
+        push!(As, parse(Int64, line[15:19]))
+        push!(ds, parse(Float64, d))
+        push!(us, parse(Float64, replace(line[44:54], "#" => "")))
+        push!(exps, experimental)
     end    
-    data
+    (Z=Zs, A=As, delta=ds, experimental=exps, uncertainty=us) 
 end
-
 
 
 """
@@ -38,28 +44,37 @@ end
 function parsehfb(hfbfile)
     skipto = 4
     iline = 0
-    data = Dict{Tuple{Int64, Int64}, NamedTuple{(:value, :ex), Tuple{Float64, Bool}}}()
+    Zs = Int64[]
+    As = Int64[]
+    ds = Float64[]
     for line in readlines(hfbfile)
         iline += 1
         if iline < skipto
             continue
         end
-        Z = parse(Int64, line[1:4])
-        A = parse(Int64, line[6:8])
-        d = parse(Float64, line[63:68]) * 1000.0
-        data[(A, Z)] = (value=d, ex=false)
+        push!(Zs, parse(Int64, line[1:4]))
+        push!(As, parse(Int64, line[6:8]))
+        push!(ds, parse(Float64, line[63:68]) * 1000.0)
     end    
-    data
+    (Z=Zs, A=As, delta=ds, experimental=zeros(Bool, length(Zs)), 
+     uncertainty=zeros(length(Zs)))
 end
 
 
 """
-    generatedatabase(amefile, hfbfile)
+    parsefrdm(frdmfile)
 
-    Merge experimental AME database and calculated HFB-24 nuclear masses data
+    Parse FRDM-2012 file and return NamedTuple (Z, A, delta)
 """
-function generatedatabase(amefile, hfbfile)
-    data = parsehfb(hfbfile)
-    ame = parseame20(amefile)
-    merge(data, ame)
+function parsefrdm(frdmfile)
+    Zs = Int64[]
+    As = Int64[]
+    ds = Float64[]
+    for line in readlines(frdmfile)
+        push!(Zs, parse(Int64, line[1:5]))
+        push!(As, parse(Int64, line[12:15]))
+        push!(ds, parse(Float64, line[129:135]) * 1000.0)
+    end    
+    (Z=Zs, A=As, delta=ds, experimental=zeros(Bool, length(Zs)), 
+     uncertainty=zeros(length(Zs)))
 end
