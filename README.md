@@ -49,8 +49,8 @@ julia> cf252 = Nuclide("Cf-252", -76035.0, experimental=true, uncertainty=0.5)
 julia> og295 = Nuclide("Og-295", 203000.0)
 ```
 
-Operator `+` is defined which returns a nuclide being sum of terms $(A_1 + A_2,
-Z_1 + Z_2)$ taking resulting nuclide data from AME. If other database is needed
+Operator `+` is defined which returns a nuclide being sum of terms $$(A_1 + A_2,
+Z_1 + Z_2)$$ taking resulting nuclide data from AME. If other database is needed
 it can be created based on the name of the resulting nuclide
 
 ```julia-repl
@@ -69,7 +69,7 @@ julia> idx = filter(i->NuclearMasses.ame20.A[i] == 208 &&
 ```
 
 But perhaps, it is better to convert the NamedTuples to DataFrames, which
-is straightforward, and use DataFrames powers
+is straightforward, and use DataFrames powers instead
 
 ```julia-repl
 julia> df = DataFrame(NuclearMasses.ame20)
@@ -91,5 +91,6 @@ The module can be extended for parsing new model by placing parser in
 * [2] S. Goriely, N. Chamel, and J.M. Pearson (2013) Phys. Rev. C88, 061302
 * [3] P. Moller et al., Atomic Data and Nuclear Data Tables 109-110 (2016) 1-203 
 
+## Notice
 Any work that will use this module should make references to the original papers
 listed above.

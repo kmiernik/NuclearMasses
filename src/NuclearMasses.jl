@@ -1,9 +1,5 @@
 module NuclearMasses
 
-#=
-id = filter(i->nt.A[i] == 208 && nt.Z[i] == 82, eachindex(nt.A))
-=#
-
 include("dataparse.jl")
 
 ame20 = parseame20(pkgdir(NuclearMasses, "data", "ame2020.dat"))
