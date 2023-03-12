@@ -141,6 +141,7 @@ end
 
 
 Base.:+(x::Nuclide, y::Nuclide) = Nuclide(x.A + y.A, x.Z + y.Z)
+Base.:-(x::Nuclide, y::Nuclide) = Nuclide(x.A - y.A, x.Z - y.Z)
 
 
 function Base.show(io::IO, e::Nuclide)
