@@ -1,5 +1,5 @@
 # NuclearMasses
-This package provides nuclear masses in form of mass excess, defined as
+This package provides nuclear masses in the form of mass excess, defined as
 
 $$M(A, Z) = A\times u + \Delta(A, Z)$$
 
@@ -23,24 +23,16 @@ which holds mass number `A`, atomic number `Z`, element name, mass excess
 `delta` and its `uncertainty` in keV, flag `experimental` for indication if 
 the value was measured experimentally or not (notice that AME2020 includes
 also extrapolations).
-
-There are number of convenience constructors for this struct, including
-creating nuclide by A, Z, or name in format "element-A" e.g.
-
-```julia-repl
-julia> c12 = Nuclide(12, 6)
-julia> he4 = Nuclide("He-4")
-```
-in these cases the mass excess will be automatically found in the databases.
-The default database is the AME2020. For other models indicate the database
-by named parameter `model`
+There are several convenience constructors for this struct, including
+creating nuclide by A, Z, or name in the format "element-A" e.g.
+in these cases, the mass excess will be automatically found in the databases.
+The default database is the AME2020. For other models indicate the database by the named parameter `model``
 
 ```julia-repl
 julia> sn132 = Nuclide(132, 50, model=NuclearMasses.hfb24)
 ```
 
-Mass excess can be also specified manually in a constructor versions, 
-the experimental flag is set then by default to false, and `uncertainty` to 0.0,
+Mass excess can be also specified manually in a constructor version, the experimental flag is set then by default to false, and `uncertainty` to 0.0,
 so if other values are needed one has to specify it directly.
 
 ```julia-repl
@@ -49,8 +41,8 @@ julia> cf252 = Nuclide("Cf-252", -76035.0, experimental=true, uncertainty=0.5)
 julia> og295 = Nuclide("Og-295", 203000.0)
 ```
 
-Operator `+` is defined which returns a nuclide being sum of terms $$(A_1 + A_2,
-Z_1 + Z_2)$$ taking resulting nuclide data from AME. If other database is needed
+Operator `+` is defined which returns a nuclide being the sum of terms $$(A_1 + A_2,
+Z_1 + Z_2)$$ taking resulting nuclide data from AME. If another database is needed
 it can be created based on the name of the resulting nuclide
 
 ```julia-repl
@@ -69,13 +61,9 @@ julia> idx = filter(i->NuclearMasses.ame20.A[i] == 208 &&
 ```
 
 But perhaps, it is better to convert the NamedTuples to DataFrames, which
-is straightforward, and use DataFrames powers instead
+is straightforward, and use DataFrames powers instead.
 
-```julia-repl
-julia> df = DataFrame(NuclearMasses.ame20)
-```
-
-New mass model can be introduced by creating appropriate NamedTuple, with
+A new mass model can be introduced by creating an appropriate NamedTuple, with
 at least the `(Z, A, d, experimental, uncertainty)` fields.
 
 ```julia-repl
@@ -83,8 +71,7 @@ julia> dummy = (Z=[6], A=[12], d=[0.0], experimental=[true], uncertainty=[0.0], 
 julia> c12 = Nuclide("C-12", model=dummy)
 ```
 
-The module can be extended for parsing new model by placing parser in 
-`src/parsedata.jl`, and loading the data in `src/NuclearModel.jl`.
+The module can be extended for parsing the new model by placing the parser in `src`/parsedata.jl`, and loading the data in `src/NuclearModel.jl`.
 
 ## References
 * [1] Meng Wang et al 2021 Chinese Phys. C 45 030003
